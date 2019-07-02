@@ -4,4 +4,10 @@ header {
   font-family: cursive;
 }
 
+div.lists {
+  padding: 20px;
+  margin: 10px;
+  border: 2px solid red;
+  border-radius: 20px;
+}
 
