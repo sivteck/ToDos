@@ -1,8 +1,9 @@
 import { fade, lightUp } from './animate.js'
-let createList = (id, name, desc, label) => {
+let createList = (id, name, items, desc, label) => {
   return {
     id: id,
     name: name,
+    items: items,
     desc: desc,
     label: label
   }
@@ -27,6 +28,10 @@ function renderListDesc (list) {
   listLabel.textContent = list.label
   buttonDeleteList.onclick = deleteList
   lists.appendChild(clone)
+}
+
+function addList (list, db) {
+
 }
 
 function removeListDescs () {
