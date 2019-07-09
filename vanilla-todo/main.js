@@ -4,14 +4,22 @@ import { createItem } from './modules/items.js'
 let db = null
 
 function initDb (name) {
-  return Promise((resolve, reject) => {
-    if (db) {
+  return new Promise((resolve, reject) => {
+    if (db !== null) {
       resolve()
       return
     }
     let request = window.indexedDB.open(name, 1)
     request.onupgradeneeded = e => {
       db = e.target.result
+      let store = db.createObjectStore('lists', { keyPath: 'listId' })
+      let nameIndex = store.createIndex('by_name', 'name')
+      let labelIndex = store.createIndex('by_label', 'label')
+      console.log(db)
+    }
+    request.onsuccess = e => {
+      db = e.target.result
+      resolve()
     }
   })
 }
@@ -21,9 +29,7 @@ function getDemoData () {
   let listItems = [['9', '2', '5'], ['6', 'to', '10'], ['may', 'december', 'july']]
   let listDescs = ['meme kill', 'looking for inner peace', 'vacate']
   let listLabels = ['not urgent', 'urgent', 'gtdo']
-
   let lists = []
-
   for (let id in listNames) {
     lists.push(createList(id + 10, listNames[id], listItems[id], listDescs[id], listLabels[id]))
   }
@@ -32,14 +38,32 @@ function getDemoData () {
 
 let dLists = getDemoData()
 
-async function insertList (list) {
-  let dbProm = await initDb()
-  dbProm.then((dbR) => {
-    console.log(dbR)
+function insertList (list) {
+  let dbProm = initDb('VanillaToDo')
+  dbProm.then(() => {
+    let tx = db.transaction('lists', 'readwrite')
+    let store = tx.objectStore('lists')
+    store.put(list)
   }
   )
 }
 
-insertList(dLists[0]).then(() => console.log('momomomomo'))
+function fetchByListId (listId) {
+  let dbProm = initDb('VanillaToDo')
+  return dbProm.then(e => new Promise((resolve, reject) => {
+    let tx = db.transaction('lists', 'readonly')
+    let store = tx.objectStore('lists')
+    let result = store.get(listId)
+    tx.oncomplete = e => {
+      resolve(result)
 
-getDemoData().forEach((x) => renderListDesc(x))
+      console.log('mememe')
+    }
+  }))
+}
+
+insertList(dLists[0])
+
+console.log(fetchByListId('010').then(x => console.log(x.result)))
+
+getDemoData().forEach(x => renderListDesc(x))

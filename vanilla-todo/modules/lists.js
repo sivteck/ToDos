@@ -1,7 +1,7 @@
 import { fade, lightUp } from './animate.js'
 let createList = (id, name, items, desc, label) => {
   return {
-    id: id,
+    listId: id,
     name: name,
     items: items,
     desc: desc,
@@ -11,7 +11,6 @@ let createList = (id, name, items, desc, label) => {
 
 function renderListDesc (list) {
   let template = document.querySelector('#lists-template')
-  console.log(template)
   let lists = document.querySelector('lists')
   let clone = document.importNode(template.content, true)
   let div = clone.querySelector('div')
