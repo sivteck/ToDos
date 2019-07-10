@@ -10,10 +10,10 @@
     <header>
       <h1> ToDo </h1>
       <nav>
-        <a href="/newList">New List</a>
-        <a href="/lists">Lists</a>
-        <a href="/today">Today</a>
-        <a href="/scheduled">Scheduled</a>
+        <button id="newList">New List</button>
+        <button id="allLists">All Lists</button>
+        <button id="today">Today</button>
+        <button id="scheduled">Scheduled</button>
       </nav>
     </header>
 
@@ -21,22 +21,33 @@
 
     </lists>
 
-    <items>
+    <view-list>
+      <items>
 
-    </items>
+      </items>
+    </view-list>
 
     <template id="lists-template">
       <div class="lists">
         <h2 class="list-name"></h2>
+        <input id="edit-list-name" type="text"> </input>
         <p class="list-desc"></p>
+        <input id="edit-list-desc" type="text"> </input>
         <p class="list-label"></p>
+        <input id="edit-list-label" type="text"> </input>
         <button class="deleteList">Delete</button>
       </div>
     </template>
 
-    <template id="items">
+    <template id="items-template">
       <div class="items">
-
+        <p class="item-check"></p>
+        <p class="item-name"></p>
+        <p class="item-notes"></p>
+        <p class="item-label"></p>
+        <p class="item-created"></p>
+        <p class="item-scheduled"></p>
+        <p class="item-priority"></p>
       </div>
     </template>
 

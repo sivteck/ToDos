@@ -1,4 +1,16 @@
 import { fade, lightUp } from './animate.js'
+
+class ListCard extends HTMLElement {
+  constructor () {
+    super()
+    let template = document.getElementById('lists-template')
+    let templateContent = template.content
+
+    const shadowRoot = this.attachShadow({ mode: 'open' })
+      .appendChild(templateContent.cloneNode(true))
+  }
+}
+
 let createList = (id, name, items, desc, label) => {
   return {
     listId: id,
@@ -9,7 +21,11 @@ let createList = (id, name, items, desc, label) => {
   }
 }
 
-function renderListDesc (list) {
+function renderListCard (list) {
+
+}
+
+function renderListDesc (list, deleteListAction) {
   let template = document.querySelector('#lists-template')
   let lists = document.querySelector('lists')
   let clone = document.importNode(template.content, true)
@@ -18,19 +34,35 @@ function renderListDesc (list) {
   let listDesc = clone.querySelector('p.list-desc')
   let listLabel = clone.querySelector('p.list-label')
   let buttonDeleteList = clone.querySelector('button.deleteList')
-  div.id = list.id
+  div.id = list.listId
   div.onmouseenter = fade
   div.onmouseleave = lightUp
   div.onclick = renderList
   listName.textContent = list.name
   listDesc.textContent = list.desc
   listLabel.textContent = list.label
-  buttonDeleteList.onclick = deleteList
+  buttonDeleteList.onclick = deleteListAction
   lists.appendChild(clone)
 }
 
-function addList (list, db) {
-
+function renderAddList (list, db) {
+  let template = document.querySelector('#lists-template')
+  let lists = document.querySelector('lists')
+  let clone = document.importNode(template.content, true)
+  let div = clone.querySelector('div')
+  let listName = clone.querySelector('h2.list-name')
+  let listDesc = clone.querySelector('p.list-desc')
+  let listLabel = clone.querySelector('p.list-label')
+  let buttonDeleteList = clone.querySelector('button.deleteList')
+  div.id = list.listId
+  div.onmouseenter = fade
+  div.onmouseleave = lightUp
+  div.onclick = renderList
+  listName.textContent = list.name
+  listDesc.textContent = list.desc
+  listLabel.textContent = list.label
+  // buttonDeleteList.onclick = deleteListAction
+  lists.appendChild(clone)
 }
 
 function removeListDescs () {
@@ -41,12 +73,7 @@ function removeListDescs () {
 function renderList (items) {
 }
 
-function deleteList (buttonDeleteList) {
-  let id = buttonDeleteList.target.parentElement.getAttribute('id')
-  document.getElementById(id).remove()
-}
-
 function updateList (updates) {
 }
 
-export { createList, renderListDesc, removeListDescs, deleteList, updateList, renderList }
+export { createList, renderListDesc, removeListDescs, updateList, renderList, ListCard }
