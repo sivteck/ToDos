@@ -1,8 +1,18 @@
-import { createList, renderListDesc, removeListDescs, ListCard } from './modules/lists.js'
+import { createList, renderListDesc, ListCard } from './modules/lists.js'
 import { createItem, renderItem, deleteItem } from './modules/items.js'
 import { fade, lightUp } from './modules/animate.js'
 
 customElements.define('list-card', ListCard)
+
+let lV = document.createElement('list-card')
+  .setAttribute('listName', 'Kill MeMe')
+//   .setAttribute('listDesc', 'killed meme already')
+//   .setAttribute('listLabel', 'waste')
+//   .setAttribute('listId', 34)
+//
+
+console.log(lV)
+document.getElementsByTagName('lists')[0].appendChild(lV)
 
 let db = null
 
@@ -130,5 +140,4 @@ insertList(dLists[2])
 // console.log(deleteListById(12).then(req => console.log(req)))
 // addItemToList('mok', '110').then(() => console.log('keel'))
 fetchAllLists().then(ls => ls.forEach(l => renderListDesc(l, deleteListAction)))
-
 // getDemoData().forEach(x => renderListDesc(x))

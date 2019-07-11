@@ -18,38 +18,20 @@
     </header>
 
     <lists>
-
     </lists>
 
-    <view-list>
-      <items>
-
-      </items>
-    </view-list>
-
-    <template id="lists-template">
-      <div class="lists">
-        <h2 class="list-name"></h2>
-        <input id="edit-list-name" type="text"> </input>
-        <p class="list-desc"></p>
-        <input id="edit-list-desc" type="text"> </input>
-        <p class="list-label"></p>
-        <input id="edit-list-label" type="text"> </input>
-        <button class="deleteList">Delete</button>
-      </div>
+    <template id="lists-view">
+      <p> <slot name="list-card-view">Lists go here</slot> </p>
     </template>
 
-    <template id="items-template">
-      <div class="items">
-        <p class="item-check"></p>
-        <p class="item-name"></p>
-        <p class="item-notes"></p>
-        <p class="item-label"></p>
-        <p class="item-created"></p>
-        <p class="item-scheduled"></p>
-        <p class="item-priority"></p>
+    <template id="list-card">
+      <div class="listV">
+        <p> Mo Mo Card </p>
+        <h2><slot name="list-name">List Name</slot></h2>
+        <p> <slot name="list-desc">List Desc</slot> </p>
+        <p> <slot name="list-label">List Label</slot> </p>
+        <p> <slot name="list-delete">Delete List</slot> </p>
       </div>
     </template>
-
   </body>
 </html>
