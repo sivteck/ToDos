@@ -1,18 +1,17 @@
-import { createList, renderListDesc, ListCard } from './modules/lists.js'
+import { createList, renderListDesc, ListCard } from './modules/list-card.js'
 import { createItem, renderItem, deleteItem } from './modules/items.js'
 import { fade, lightUp } from './modules/animate.js'
 
 customElements.define('list-card', ListCard)
 
 let lV = document.createElement('list-card')
-  .setAttribute('listName', 'Kill MeMe')
-//   .setAttribute('listDesc', 'killed meme already')
-//   .setAttribute('listLabel', 'waste')
-//   .setAttribute('listId', 34)
-//
+lV.setAttribute('listName', 'Kill MeMe')
+lV.setAttribute('listDesc', 'killed meme already')
+lV.setAttribute('listLabel', 'waste')
+lV.setAttribute('listId', 34)
 
-console.log(lV)
-document.getElementsByTagName('lists')[0].appendChild(lV)
+let lists = document.querySelector('lists')
+lists.appendChild(lV)
 
 let db = null
 
@@ -32,6 +31,9 @@ function initDb (name) {
     request.onsuccess = e => {
       db = e.target.result
       resolve()
+    }
+    request.onerror = e => {
+      reject(e)
     }
   })
 }
