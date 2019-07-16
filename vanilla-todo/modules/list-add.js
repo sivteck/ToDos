@@ -6,7 +6,10 @@ class ListAdd extends HTMLElement {
     let template = document.createElement('template')
     let tempStr = String.raw`
       <div class="listV">
-      <input type="text"> </input>
+      <input id="list-name" type="text"> </input>
+      <input id="list-desc" type="text"> </input>
+      <input id="list-label" type="text"> </input>
+      <input id="list-priority" type="text"> </input>
       </div>
     `
     template.innerHTML = tempStr
@@ -35,6 +38,8 @@ class ListAdd extends HTMLElement {
   }
 
   onconnectedCallback () {
-    render()
+    this.render()
   }
 }
+
+export { ListAdd }

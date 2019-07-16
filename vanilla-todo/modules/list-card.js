@@ -8,9 +8,9 @@ class ListCard extends HTMLElement {
   render (listId, listName, listDesc, listLabel) {
     let template = document.createElement('template')
     let tempStr = String.raw`
-      <div class="listV">
-        <h2 class="listNameHeader"><slot name="list-name">${listName}</slot></h2>
-        <input type="text"> </input>
+      <div class="listV" id="${listId}">
+        <h2 class="listNameHeader" ><slot name="list-name">${listName}</slot></h2>
+        <input type="text" class="listNameHeaderInput" hidden="true"> </input>
         <p> <slot name="list-desc">${listDesc}</slot> </p>
         <p> <slot name="list-label">${listLabel}</slot> </p>
         <p> <slot name="list-delete">${listId}</slot> </p>
@@ -37,13 +37,29 @@ class ListCard extends HTMLElement {
     shadowRoot.appendChild(style)
     let clone = document.importNode(template.content, true)
     let listNameHeader = clone.querySelector('h2.listNameHeader')
-    listNameHeader.onclick = this.editListName()
+    listNameHeader.addEventListener('click', x => this.editListName(x))
+    // listNameHeader.onclick = this.editListName()
     shadowRoot.appendChild(clone)
   }
 
   editListName (listId) {
     console.log('killed mememememe')
-    console.log(this.shadowRoot)
+    let parentE = listId.target.parentElement.parentElement
+    let listHeader = listId.target.parentElement
+    listHeader.hidden = true
+    console.log(parentE)
+    let closestInput = parentE.querySelector('input.listNameHeaderInput')
+    closestInput.addEventListener('keypress', (e) => {
+      if (e.keyCode === 13) {
+        console.log('dkfja')
+        listHeader.removeAttribute('hidden')
+        console.log(e.target.attributes)
+        closestInput.hidden = true
+      }
+    })
+    console.log('ParentE')
+    console.log(parentE)
+    closestInput.hidden = false
   }
 
   connectedCallback () {

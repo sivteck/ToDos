@@ -1,8 +1,11 @@
 import { createList, renderListDesc, ListCard } from './modules/list-card.js'
+// import { ListView } from './modules/list-view.js'
+import { ListAdd } from './modules/list-add.js'
 import { createItem, renderItem, deleteItem } from './modules/items.js'
 import { fade, lightUp } from './modules/animate.js'
 
-customElements.define('list-card', ListCard)
+window.customElements.define('list-card', ListCard)
+window.customElements.define('list-add', ListAdd)
 
 let lV = document.createElement('list-card')
 lV.setAttribute('listName', 'Kill MeMe')
