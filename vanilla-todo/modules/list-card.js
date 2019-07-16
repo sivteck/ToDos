@@ -7,11 +7,10 @@ class ListCard extends HTMLElement {
 
   render (listId, listName, listDesc, listLabel) {
     let template = document.createElement('template')
-    console.log(template)
     let tempStr = String.raw`
       <div class="listV">
-        <p> Mo Mo Card </p>
-        <h2><slot name="list-name">${listName}</slot></h2>
+        <h2 class="listNameHeader"><slot name="list-name">${listName}</slot></h2>
+        <input type="text"> </input>
         <p> <slot name="list-desc">${listDesc}</slot> </p>
         <p> <slot name="list-label">${listLabel}</slot> </p>
         <p> <slot name="list-delete">${listId}</slot> </p>
@@ -19,7 +18,6 @@ class ListCard extends HTMLElement {
     `
     template.innerHTML = tempStr
     let templateContent = template.content
-    console.log(template.content)
 
     const shadowRoot = this.attachShadow({ mode: 'open' })
 
@@ -32,13 +30,20 @@ class ListCard extends HTMLElement {
         border: 2px solid red;
         border-radius: 20px;
     }
+    div.listV:hover {
+        background-color: yellow;
+    }
     `
     shadowRoot.appendChild(style)
-    shadowRoot.appendChild(templateContent.cloneNode(true))
-    console.log(shadowRoot)
-    console.log(style.isConnected)
+    let clone = document.importNode(template.content, true)
+    let listNameHeader = clone.querySelector('h2.listNameHeader')
+    listNameHeader.onclick = this.editListName()
+    shadowRoot.appendChild(clone)
+  }
 
-    console.log(listName)
+  editListName (listId) {
+    console.log('killed mememememe')
+    console.log(this.shadowRoot)
   }
 
   connectedCallback () {
@@ -56,7 +61,6 @@ function renderListDesc (list, deleteListAction) {
   lV.setAttribute('listDesc', list.desc)
   lV.setAttribute('listLabel', list.label)
   lV.setAttribute('listId', list.listId)
-
   let lists = document.querySelector('lists')
   lists.appendChild(lV)
 }
