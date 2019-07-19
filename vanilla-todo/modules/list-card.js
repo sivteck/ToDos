@@ -10,7 +10,6 @@ class ListCard extends HTMLElement {
     let tempStr = String.raw`
       <div class="listV" id="${listId}">
         <h2 class="listNameHeader" ><slot name="list-name">${listName}</slot></h2>
-        <input type="text" class="listNameHeaderInput" hidden="true"> </input>
         <p> <slot name="list-desc">${listDesc}</slot> </p>
         <p> <slot name="list-label">${listLabel}</slot> </p>
         <p> <slot name="list-delete">${listId}</slot> </p>

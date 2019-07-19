@@ -7,7 +7,7 @@ class ListView extends HTMLElement {
 
   render(lists){
     for (list in lists){
-      let lC = document.createElement('list-card')
+      renderListDesc(list)
     }
   }
 

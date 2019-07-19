@@ -1,3 +1,5 @@
+'use strict'
+
 import { createList, renderListDesc, ListCard } from './modules/list-card.js'
 // import { ListView } from './modules/list-view.js'
 import { ListAdd } from './modules/list-add.js'
@@ -16,7 +18,27 @@ lV.setAttribute('listId', 34)
 let lists = document.querySelector('lists')
 lists.appendChild(lV)
 
+let newListVisible = false
+let newListB = document.querySelector('#newList')
+newListB.addEventListener('click', x => {
+  if (!newListVisible) {
+    newListB.innerHTML = '-'
+    let lA = document.createElement('list-add')
+    lists.insertBefore(lA, lists.childNodes[0])
+    newListVisible = true
+  } else {
+    newListB.innerHTML = '+'
+    let lA = document.querySelector('list-add')
+    lA.remove()
+    newListVisible = false
+  }
+})
+
 let db = null
+
+function getNewListData (ld) {
+  console.log(ld)
+}
 
 function initDb (name) {
   return new Promise((resolve, reject) => {
@@ -106,7 +128,6 @@ function deleteListAction (event) {
 function deleteListById (listId) {
   let dbProm = initDb('VanillaToDo')
   return dbProm.then(e => new Promise((resolve, reject) => {
-    console.log(db)
     let tx = db.transaction('lists', 'readwrite')
     let store = tx.objectStore('lists')
     let req = store.delete(listId)

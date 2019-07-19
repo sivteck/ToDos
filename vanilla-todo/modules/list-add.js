@@ -6,21 +6,24 @@ class ListAdd extends HTMLElement {
     let template = document.createElement('template')
     let tempStr = String.raw`
       <div class="listV">
-      <input id="list-name" type="text"> </input>
-      <input id="list-desc" type="text"> </input>
-      <input id="list-label" type="text"> </input>
-      <input id="list-priority" type="text"> </input>
+      <form id="ListForm">
+        <input id="list-name" type="text" placeholder="List Name">
+      <br>
+        <input id="list-desc" type="text" placeholder="List Description">
+      <br>
+        <input id="list-label" type="text" placeholder="List Label">
+      <br>
+        <input id="list-priority" type="text" placeholder="List Priority">
+      <br>
+
+        <button type="button">MeME </button>
+      </form>
       </div>
     `
     template.innerHTML = tempStr
     let templateContent = template.content
-
-    const shadowRoot = this.attachShadow({ mode: 'open' })
-
+    let shadowRoot = this.attachShadow({ mode: 'open' })
     const style = document.createElement('style')
-
-    const input = document.createElement('input')
-
     style.textContent = `
     div.listV {
         padding: 20px;
@@ -34,11 +37,20 @@ class ListAdd extends HTMLElement {
     `
     shadowRoot.appendChild(style)
     let clone = document.importNode(template.content, true)
-    shadowRoot.appendChild(templateContent.cloneNode(true))
+    let theButton = clone.querySelector('button')
+    theButton.setAttribute('meme', 'momo')
+    theButton.addEventListener('click', function (s) {
+      console.log(shadowRoot.querySelector('#list-name'))
+    })
+    shadowRoot.appendChild(clone)
   }
-
-  onconnectedCallback () {
+  connectedCallback () {
     this.render()
+    console.log(this.$form)
+  }
+  formSubmit (e) {
+    console.log(e)
+    return false
   }
 }
 
