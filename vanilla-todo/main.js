@@ -10,9 +10,9 @@ window.customElements.define('list-card', ListCard)
 window.customElements.define('list-add', ListAdd)
 
 let lV = document.createElement('list-card')
-lV.setAttribute('listName', 'Kill MeMe')
-lV.setAttribute('listDesc', 'killed meme already')
-lV.setAttribute('listLabel', 'waste')
+lV.setAttribute('listName', 'First')
+lV.setAttribute('listDesc', 'First Desc')
+lV.setAttribute('listLabel', 'First Label')
 lV.setAttribute('listId', 34)
 
 let lists = document.querySelector('lists')
@@ -24,7 +24,15 @@ newListB.addEventListener('click', x => {
   if (!newListVisible) {
     newListB.innerHTML = '-'
     let lA = document.createElement('list-add')
-    lists.insertBefore(lA, lists.childNodes[0])
+    lA.addEventListener('submitted', x => {
+      console.log('from main')
+      insertList(x.detail).then(() => {
+        document.querySelector('lists').innerHTML = ''
+        renderAll()
+      })
+    })
+    // lists.insertBefore(lA, lists.childNodes[0])
+    document.querySelector('#createMenu').appendChild(lA)
     newListVisible = true
   } else {
     newListB.innerHTML = '+'
@@ -33,6 +41,14 @@ newListB.addEventListener('click', x => {
     newListVisible = false
   }
 })
+
+let targetNode = document.querySelector('list-add')
+
+function observeListAdd (mutationList, observer) {
+  console.log('meme')
+}
+
+let observer = new MutationObserver(observeListAdd)
 
 let db = null
 
@@ -66,7 +82,7 @@ function initDb (name) {
 function getDemoData () {
   let listNames = ['work', 'personal', 'vacation']
   let listItems = [['9', '2', '5'], ['6', 'to', '10'], ['may', 'december', 'july']]
-  let listDescs = ['meme kill', 'looking for inner peace', 'vacate']
+  let listDescs = ['Finish Project', 'looking for inner peace', 'vacate']
   let listLabels = ['not urgent', 'urgent', 'gtdo']
   let lists = []
   for (let id in listNames) {
@@ -79,7 +95,7 @@ let dLists = getDemoData()
 
 function insertList (list) {
   let dbProm = initDb('VanillaToDo')
-  dbProm.then(() => {
+  return dbProm.then(() => {
     let tx = db.transaction('lists', 'readwrite')
     let store = tx.objectStore('lists')
     store.put(list)
@@ -158,12 +174,14 @@ function addItemToList (item, listId) {
   }))
 }
 
-insertList(dLists[0])
-insertList(dLists[1])
-insertList(dLists[2])
+// insertList(dLists[0])
+// insertList(dLists[1])
+// insertList(dLists[2])
 
 // console.log(fetchListById('010').then(req => console.log(req.result)))
 // console.log(deleteListById(12).then(req => console.log(req)))
 // addItemToList('mok', '110').then(() => console.log('keel'))
-fetchAllLists().then(ls => ls.forEach(l => renderListDesc(l, deleteListAction)))
+function renderAll () {
+  fetchAllLists().then(ls => ls.forEach(l => renderListDesc(l, deleteListAction)))
+}
 // getDemoData().forEach(x => renderListDesc(x))

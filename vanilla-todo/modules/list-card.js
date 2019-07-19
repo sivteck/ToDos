@@ -13,6 +13,7 @@ class ListCard extends HTMLElement {
         <p> <slot name="list-desc">${listDesc}</slot> </p>
         <p> <slot name="list-label">${listLabel}</slot> </p>
         <p> <slot name="list-delete">${listId}</slot> </p>
+        <button> Delete List </button>
       </div>
     `
     template.innerHTML = tempStr
@@ -68,6 +69,8 @@ class ListCard extends HTMLElement {
     let listLabel = this.getAttribute('listLabel')
     this.render(listId, listName, listDesc, listLabel)
   }
+
+  static get observedAttributes () { return ['defined'] }
 }
 
 function renderListDesc (list, deleteListAction) {
