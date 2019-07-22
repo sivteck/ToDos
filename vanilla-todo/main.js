@@ -44,11 +44,26 @@ newListB.addEventListener('click', x => {
 
 let targetNode = document.querySelector('list-add')
 
-function observeListAdd (mutationList, observer) {
-  console.log('meme')
+let listsRoot = document.querySelector('lists')
+
+function observeLists (mutations) {
+  mutations.forEach(x => {
+    if (x.attributeName === 'deleted') {
+      console.log(x)
+      let listId = x.target.getAttribute('listid')
+      deleteListById(listId * 1).then(x.target.remove())
+    }
+  })
 }
 
-let observer = new MutationObserver(observeListAdd)
+let observer = new MutationObserver(observeLists)
+
+observer.observe(listsRoot, {
+  characterData: false,
+  attributes: true,
+  childList: true,
+  subtree: true
+})
 
 let db = null
 

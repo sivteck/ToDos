@@ -13,10 +13,11 @@ class ListCard extends HTMLElement {
         <p> <slot name="list-desc">${listDesc}</slot> </p>
         <p> <slot name="list-label">${listLabel}</slot> </p>
         <p> <slot name="list-delete">${listId}</slot> </p>
-        <button> Delete List </button>
+        <button type="button"> Delete List </button>
       </div>
     `
     template.innerHTML = tempStr
+    console.log(template.content)
     let templateContent = template.content
 
     const shadowRoot = this.attachShadow({ mode: 'open' })
@@ -37,8 +38,14 @@ class ListCard extends HTMLElement {
     shadowRoot.appendChild(style)
     let clone = document.importNode(template.content, true)
     let listNameHeader = clone.querySelector('h2.listNameHeader')
+    let theButton = clone.querySelector('button')
     listNameHeader.addEventListener('click', x => this.editListName(x))
     // listNameHeader.onclick = this.editListName()
+    theButton.setAttribute('meme', 'momo')
+    theButton.addEventListener('click', function (e) {
+      this.setAttribute('deleted', 'true')
+    }.bind(this))
+
     shadowRoot.appendChild(clone)
   }
 
@@ -70,7 +77,23 @@ class ListCard extends HTMLElement {
     this.render(listId, listName, listDesc, listLabel)
   }
 
-  static get observedAttributes () { return ['defined'] }
+  attributeChangedCallback (name, newValue, oldValue) {
+    let listName = this.getAttribute('list-name')
+    let listDesc = this.getAttribute('list-desc')
+    let listPriority = this.getAttribute('list-priority')
+    let listLabel = this.getAttribute('list-label')
+    let attrs = {
+      'listId': Math.floor((Math.random() * 100)),
+      'name': listName,
+      'list-desc': listDesc,
+      'list-priority': listPriority,
+      'label': listLabel
+    }
+
+    this.dispatchEvent(new CustomEvent('deleted', { detail: attrs }))
+  }
+
+  static get observedAttributes () { return ['deleted'] }
 }
 
 function renderListDesc (list, deleteListAction) {
