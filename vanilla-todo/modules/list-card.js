@@ -18,7 +18,6 @@ class ListCard extends HTMLElement {
     `
     template.innerHTML = tempStr
     console.log(template.content)
-    let templateContent = template.content
 
     const shadowRoot = this.attachShadow({ mode: 'open' })
 
@@ -37,36 +36,17 @@ class ListCard extends HTMLElement {
     `
     shadowRoot.appendChild(style)
     let clone = document.importNode(template.content, true)
-    let listNameHeader = clone.querySelector('h2.listNameHeader')
+    let div = clone.querySelector('div')
+    div.addEventListener('click', function (e) {
+      this.setAttribute('clicked', 'true')
+    }.bind(this))
     let theButton = clone.querySelector('button')
-    listNameHeader.addEventListener('click', x => this.editListName(x))
-    // listNameHeader.onclick = this.editListName()
     theButton.setAttribute('meme', 'momo')
     theButton.addEventListener('click', function (e) {
       this.setAttribute('deleted', 'true')
     }.bind(this))
 
     shadowRoot.appendChild(clone)
-  }
-
-  editListName (listId) {
-    console.log('killed mememememe')
-    let parentE = listId.target.parentElement.parentElement
-    let listHeader = listId.target.parentElement
-    listHeader.hidden = true
-    console.log(parentE)
-    let closestInput = parentE.querySelector('input.listNameHeaderInput')
-    closestInput.addEventListener('keypress', (e) => {
-      if (e.keyCode === 13) {
-        console.log('dkfja')
-        listHeader.removeAttribute('hidden')
-        console.log(e.target.attributes)
-        closestInput.hidden = true
-      }
-    })
-    console.log('ParentE')
-    console.log(parentE)
-    closestInput.hidden = false
   }
 
   connectedCallback () {
@@ -78,22 +58,32 @@ class ListCard extends HTMLElement {
   }
 
   attributeChangedCallback (name, newValue, oldValue) {
-    let listName = this.getAttribute('list-name')
-    let listDesc = this.getAttribute('list-desc')
-    let listPriority = this.getAttribute('list-priority')
-    let listLabel = this.getAttribute('list-label')
-    let attrs = {
-      'listId': Math.floor((Math.random() * 100)),
-      'name': listName,
-      'list-desc': listDesc,
-      'list-priority': listPriority,
-      'label': listLabel
+    if (name === 'clicked') {
+      let listId = this.getAttribute('listId')
+      let attrs = {
+        listId: listId
+      }
+
+      this.dispatchEvent(new CustomEvent('clicked', { detail: attrs }))
     }
 
-    this.dispatchEvent(new CustomEvent('deleted', { detail: attrs }))
+    if (name === 'deleted') {
+      let listName = this.getAttribute('list-name')
+      let listDesc = this.getAttribute('list-desc')
+      let listPriority = this.getAttribute('list-priority')
+      let listLabel = this.getAttribute('list-label')
+      let attrs = {
+        'listId': Math.floor((Math.random() * 100)),
+        'name': listName,
+        'list-desc': listDesc,
+        'list-priority': listPriority,
+        'label': listLabel
+      }
+      this.dispatchEvent(new CustomEvent('deleted', { detail: attrs }))
+    }
   }
 
-  static get observedAttributes () { return ['deleted'] }
+  static get observedAttributes () { return ['deleted', 'clicked'] }
 }
 
 function renderListDesc (list, deleteListAction) {

@@ -5,9 +5,11 @@ import { createList, renderListDesc, ListCard } from './modules/list-card.js'
 import { ListAdd } from './modules/list-add.js'
 import { createItem, renderItem, deleteItem } from './modules/items.js'
 import { fade, lightUp } from './modules/animate.js'
+import { ItemCard, renderListItems } from './modules/item-card.js'
 
 window.customElements.define('list-card', ListCard)
 window.customElements.define('list-add', ListAdd)
+window.customElements.define('item-card', ItemCard)
 
 let lV = document.createElement('list-card')
 lV.setAttribute('listName', 'First')
@@ -25,7 +27,6 @@ newListB.addEventListener('click', x => {
     newListB.innerHTML = '-'
     let lA = document.createElement('list-add')
     lA.addEventListener('submitted', x => {
-      console.log('from main')
       insertList(x.detail).then(() => {
         document.querySelector('lists').innerHTML = ''
         renderAll()
@@ -49,9 +50,12 @@ let listsRoot = document.querySelector('lists')
 function observeLists (mutations) {
   mutations.forEach(x => {
     if (x.attributeName === 'deleted') {
-      console.log(x)
       let listId = x.target.getAttribute('listid')
       deleteListById(listId * 1).then(x.target.remove())
+    } else if (x.attributeName === 'clicked') {
+      let listId = x.target.getAttribute('listid')
+      document.querySelector('lists').innerHTML = ''
+      fetchListById(listId * 1).then(list => renderListItems(list))
     }
   })
 }
@@ -94,6 +98,18 @@ function initDb (name) {
   })
 }
 
+let item1 = {
+  listId: 20,
+  id: 1,
+  check: false,
+  name: 'item 1',
+  notes: 'demo item 1',
+  label: 'demo',
+  created: 'date',
+  scheduled: 'today',
+  priority: 'high',
+  child: null
+}
 function getDemoData () {
   let listNames = ['work', 'personal', 'vacation']
   let listItems = [['9', '2', '5'], ['6', 'to', '10'], ['may', 'december', 'july']]
@@ -199,4 +215,17 @@ function addItemToList (item, listId) {
 function renderAll () {
   fetchAllLists().then(ls => ls.forEach(l => renderListDesc(l, deleteListAction)))
 }
+
+renderListItems(item1)
 // getDemoData().forEach(x => renderListDesc(x))
+document.querySelector('list-card').animate([
+  { transform: 'scale(1)', opacity: 1, offset: 0 },
+  { transform: 'scale(0.5)', opacity: 0.5, offset: 1 }
+], {
+  duration: 700,
+  easing: 'ease-in-out',
+  delay: 10,
+  iterations: Infinity,
+  directions: 'alternate',
+  fill: 'forwards'
+})

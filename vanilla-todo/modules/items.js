@@ -1,6 +1,6 @@
 import { fade, lightUp } from './animate.js'
 
-let createItem = (listId, id, check, name, notes, label, created, scheduled, priority) => {
+function createItem (listId, id, created, check = false, name = '', notes = '', label = '', scheduled = '', priority = '') {
   return {
     listId: listId,
     id: id,
