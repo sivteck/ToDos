@@ -4,18 +4,18 @@ class ItemCard extends HTMLElement {
     super()
   }
 
-  render (listId, itemId, check, name, notes, label, created, scheduled, priority) {
+  render (itemId, itemName) {
+    // listId, itemId, check, name, notes, label, created, scheduled, priority) {
     let template = document.createElement('template')
     let tempStr = String.raw`
     <div class="itemV">
       <input class="status" type="checkbox"> </input>
-      <p class="itemName"></p>  
+      <p class="itemName"> ${itemName} </p>  
       <p class="itemNotes"></p>
       <input type="textarea"> </input>
     </div>
     `
     template.innerHTML = tempStr
-    console.log(template.content)
 
     const shadowRoot = this.attachShadow({ mode: 'open' })
 
@@ -50,20 +50,24 @@ class ItemCard extends HTMLElement {
   connectedCallback () {
     let listId = this.getAttribute('listId')
     let itemId = this.getAttribute('itemId')
-    this.render(itemId)
+    let itemName = this.getAttribute('itemName')
+    this.render(itemId, itemName)
   }
 }
 
-function renderListItems (item) {
+function renderListItems (list) {
   // listId, id, check, name, notes, label, created, scheduled, priority
-  let iV = document.createElement('item-card')
-  iV.setAttribute('itemName', item.name)
-  iV.setAttribute('itemNotes', item.notes)
-  iV.setAttribute('itemLabel', item.label)
-  iV.setAttribute('itemId', item.id)
-  console.log(item)
-  let items = document.querySelector('items')
-  items.appendChild(iV)
+  let items = list['items']
+  for (let item of items) {
+    console.log(item)
+    let iV = document.createElement('item-card')
+    iV.setAttribute('itemName', item.name)
+    iV.setAttribute('itemNotes', item.notes)
+    iV.setAttribute('itemLabel', item.label)
+    iV.setAttribute('itemId', item.id)
+    let items = document.querySelector('items')
+    items.appendChild(iV)
+  }
 }
 
 export { ItemCard, renderListItems }

@@ -8,7 +8,7 @@ class ListCard extends HTMLElement {
   render (listId, listName, listDesc, listLabel) {
     let template = document.createElement('template')
     let tempStr = String.raw`
-      <div class="listV" id="${listId}">
+      <div class="listC" id="${listId}">
         <h2 class="listNameHeader" ><slot name="list-name">${listName}</slot></h2>
         <p> <slot name="list-desc">${listDesc}</slot> </p>
         <p> <slot name="list-label">${listLabel}</slot> </p>
@@ -17,20 +17,19 @@ class ListCard extends HTMLElement {
       </div>
     `
     template.innerHTML = tempStr
-    console.log(template.content)
 
     const shadowRoot = this.attachShadow({ mode: 'open' })
 
     const style = document.createElement('style')
 
     style.textContent = `
-    div.listV {
+    div.listC {
         padding: 20px;
         margin: 10px;
         border: 2px solid red;
         border-radius: 20px;
     }
-    div.listV:hover {
+    div.listC:hover {
         background-color: yellow;
     }
     `
@@ -92,8 +91,8 @@ function renderListDesc (list, deleteListAction) {
   lV.setAttribute('listDesc', list.desc)
   lV.setAttribute('listLabel', list.label)
   lV.setAttribute('listId', list.listId)
-  let lists = document.querySelector('lists')
-  lists.appendChild(lV)
+  let listV = document.querySelector('lists')
+  listV.appendChild(lV)
 }
 
 let createList = (id, name, items, desc, label) => {

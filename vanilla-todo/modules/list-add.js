@@ -4,7 +4,6 @@ class ListAdd extends HTMLElement {
     this.sRoot = this.attachShadow({ 'mode': 'open' })
   }
   render () {
-    console.log(this.sRoot)
     let template = document.createElement('template')
     let tempStr = String.raw`
       <div class="listV">
@@ -67,8 +66,6 @@ class ListAdd extends HTMLElement {
   }
   connectedCallback () {
     this.sRoot.addEventListener('submitted', x => {
-      console.log('lfma;')
-      console.log(x)
     })
     // let observer = new MutationObserver(this.onMutations)
     // observer.observe(this.sRoot, {
@@ -81,7 +78,6 @@ class ListAdd extends HTMLElement {
     this.render()
   }
   formSubmit (e) {
-    console.log('memem')
     return false
   }
   // onMutations (mutations) {
