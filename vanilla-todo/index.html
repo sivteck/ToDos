@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
+
     <script type="module" src="main.js"></script>
     <title>ToDo with Vanilla JS</title>
   </head>
@@ -11,8 +12,8 @@
     <header>
       <h1> ToDo </h1>
       <nav>
-        <button id="newList">+</button>
-        <button id="allLists">All Lists</button>
+        <button id="newItem">+</button>
+        <button id="allItems">All Items</button>
         <button id="today">Today</button>
         <button id="scheduled">Scheduled</button>
       </nav>
@@ -20,17 +21,8 @@
 
     <div id="createMenu"> </div>
 
-    <lists>
-    </lists>
-    <list-view>
-    </list-view>
-
     <items>
     </items>
-
-    <template id="lists-view">
-      <p> <slot name="list-card-view">Lists go here</slot> </p>
-    </template>
 
   </body>
 </html>

@@ -1,69 +1,61 @@
 'use strict'
 
-import { createList, renderListDesc, ListCard } from './modules/list-card.js'
-import { ListView } from './modules/list-view.js'
-import { ListAdd } from './modules/list-add.js'
-import { createItem, renderItem, deleteItem } from './modules/items.js'
-import { fade, lightUp } from './modules/animate.js'
-import { ItemCard, renderListItems } from './modules/item-card.js'
+import { ItemAdd } from './modules/item-add.js'
+import { createItem, renderItem } from './modules/items.js'
+import { ItemCard, renderItemDesc } from './modules/item-card.js'
 
-window.customElements.define('list-card', ListCard)
-window.customElements.define('list-add', ListAdd)
-window.customElements.define('list-view', ListView)
 window.customElements.define('item-card', ItemCard)
+window.customElements.define('item-add', ItemAdd)
 
-// let lV = document.createElement('list-card')
-// lV.setAttribute('listName', 'First')
-// lV.setAttribute('listDesc', 'First Desc')
-// lV.setAttribute('listLabel', 'First Label')
-// lV.setAttribute('listId', 34)
-
-let lists = document.querySelector('lists')
-// lists.appendChild(lV)
-
-let newListVisible = false
-let newListB = document.querySelector('#newList')
-newListB.addEventListener('click', x => {
-  if (!newListVisible) {
-    newListB.innerHTML = '-'
-    let lA = document.createElement('list-add')
-    lA.addEventListener('submitted', x => {
-      insertList(x.detail).then(() => {
-        document.querySelector('lists').innerHTML = ''
+let newItemVisible = false
+let newItemB = document.querySelector('#newItem')
+newItemB.addEventListener('click', x => {
+  if (!newItemVisible) {
+    newItemB.innerHTML = '-'
+    let iA = document.createElement('item-add')
+    iA.addEventListener('submitted', x => {
+      insertItem(x.detail).then(() => {
+        document.querySelector('items').innerHTML = ''
         renderAll()
       })
     })
-    // lists.insertBefore(lA, lists.childNodes[0])
-    document.querySelector('#createMenu').appendChild(lA)
-    newListVisible = true
+    document.querySelector('#createMenu').appendChild(iA)
+    newItemVisible = true
   } else {
-    newListB.innerHTML = '+'
-    let lA = document.querySelector('list-add')
-    lA.remove()
-    newListVisible = false
+    newItemB.innerHTML = '+'
+    let iA = document.querySelector('item-add')
+    iA.remove()
+    newItemVisible = false
   }
 })
 
-let targetNode = document.querySelector('list-add')
+let itemsRoot = document.querySelector('items')
 
-let listsRoot = document.querySelector('lists')
-
-function observeLists (mutations) {
+function observeItems (mutations) {
   mutations.forEach(x => {
+    if (x.attributeName === 'done') {
+      let itemId = x.target.getAttribute('itemid')
+      let itemStatus = x.target.getAttribute('done')
+      toggleStatus(itemId, itemStatus)
+    }
     if (x.attributeName === 'deleted') {
-      let listId = x.target.getAttribute('listid')
-      deleteListById(listId * 1).then(x.target.remove())
-    } else if (x.attributeName === 'clicked') {
-      let listId = x.target.getAttribute('listid')
-      document.querySelector('lists').innerHTML = ''
-      fetchListById(listId * 1).then(list => renderListItems(list.result))
+      let itemId = x.target.getAttribute('itemid')
+      deleteItemById(itemId * 1).then(x.target.remove())
+    }
+    if (x.attributeName === 'itemnotes') {
+      document.querySelector('items').innerHTML = ''
+      updateItemNotes(x.target.getAttribute('itemid') * 1, x.target.getAttribute('itemnotes')).then(x => renderAll())
+    }
+    if (x.attributeName === 'itemname') {
+      document.querySelector('items').innerHTML = ''
+      updateItemNotes(x.target.getAttribute('itemid') * 1, x.target.getAttribute('itemname')).then(x => renderAll())
     }
   })
 }
 
-let observer = new MutationObserver(observeLists)
+let observer = new MutationObserver(observeItems)
 
-observer.observe(listsRoot, {
+observer.observe(itemsRoot, {
   characterData: false,
   attributes: true,
   childList: true,
@@ -72,7 +64,7 @@ observer.observe(listsRoot, {
 
 let db = null
 
-function getNewListData (ld) {
+function getNewItemData (ld) {
   console.log(ld)
 }
 
@@ -85,9 +77,10 @@ function initDb (name) {
     let request = window.indexedDB.open(name, 1)
     request.onupgradeneeded = e => {
       db = e.target.result
-      let store = db.createObjectStore('lists', { keyPath: 'listId' })
+      let store = db.createObjectStore('items', { keyPath: 'itemId' })
       let nameIndex = store.createIndex('by_name', 'name')
       let labelIndex = store.createIndex('by_label', 'label')
+      let createdIndex = store.createIndex('by_created', 'created')
     }
     request.onsuccess = e => {
       db = e.target.result
@@ -99,159 +92,182 @@ function initDb (name) {
   })
 }
 
-let itemData = [ {
-  id: 1,
-  check: false,
-  name: 'item 1',
-  notes: 'demo item 1',
-  label: 'demo',
-  created: 'date',
-  scheduled: 'today',
-  priority: 'high',
-  child: null
-},
-{
-  id: 2,
-  check: false,
-  name: 'item 2',
-  notes: 'demo item 1',
-  label: 'demo',
-  created: 'date',
-  scheduled: 'today',
-  priority: 'high',
-  child: null
-},
-{
-  id: 3,
-  check: false,
-  name: 'item 3',
-  notes: 'demo item 3',
-  label: 'demo',
-  created: 'date',
-  scheduled: 'today',
-  priority: 'high',
-  child: null
-}]
-
 function getDemoData () {
-  let listNames = ['work', 'personal', 'vacation']
-  let listItems = [['9', '2', '5'], ['6', 'to', '10'], ['may', 'december', 'july']]
-  let listDescs = ['Finish Project', 'looking for inner peace', 'vacate']
-  let listLabels = ['not urgent', 'urgent', 'gtdo']
-  let lists = []
-  for (let id in listNames) {
-    lists.push(createList(id * 1 + 10, listNames[id], listItems[id], listDescs[id], listLabels[id]))
-  }
-  return lists
+  let itemData = [ {
+    id: 1,
+    check: false,
+    name: 'item 1',
+    notes: 'demo item 1',
+    label: 'demo',
+    created: 'date',
+    scheduled: 'today',
+    priority: 'high',
+    child: null
+  },
+  {
+    id: 2,
+    check: false,
+    name: 'item 2',
+    notes: 'demo item 1',
+    label: 'demo',
+    created: 'date',
+    scheduled: 'today',
+    priority: 'high',
+    child: null
+  },
+  {
+    id: 3,
+    check: false,
+    name: 'item 3',
+    notes: 'demo item 3',
+    label: 'demo',
+    created: 'date',
+    scheduled: 'today',
+    priority: 'high',
+    child: null
+  }]
+
+  return itemData
 }
 
-let dLists = getDemoData()
-
-function insertList (list) {
+function insertItem (item) {
   let dbProm = initDb('VanillaToDo')
   return dbProm.then(() => {
-    let tx = db.transaction('lists', 'readwrite')
-    let store = tx.objectStore('lists')
-    list['items'] = itemData.map(x => Object.assign(x, { listId: list.listId }))
-    store.put(list)
+    let tx = db.transaction('items', 'readwrite')
+    let store = tx.objectStore('items')
+    store.put(item)
   })
 }
 
-function fetchListById (listId) {
+function fetchItemById (itemId) {
   let dbProm = initDb('VanillaToDo')
   return dbProm.then(e => new Promise((resolve, reject) => {
-    let tx = db.transaction('lists', 'readonly')
-    let store = tx.objectStore('lists')
-    let req = store.get(listId)
+    let tx = db.transaction('items', 'readonly')
+    let store = tx.objectStore('items')
+    let req = store.get(itemId)
     tx.oncomplete = e => {
       resolve(req)
     }
   }))
 }
 
-function fetchAllLists () {
+function fetchAllItems () {
   let dbProm = initDb('VanillaToDo')
   return dbProm.then(e => new Promise((resolve, reject) => {
-    let tx = db.transaction('lists', 'readonly')
-    let store = tx.objectStore('lists')
-    let lists = []
+    let tx = db.transaction('items', 'readonly')
+    let store = tx.objectStore('items')
+    let items = []
     store.openCursor().onsuccess = e => {
       let cursor = e.target.result
       if (cursor) {
-        lists.push(cursor.value)
+        items.push(cursor.value)
         cursor.continue()
       }
     }
     tx.oncomplete = e => {
-      resolve(lists)
+      items = items.sort(function (i1, i2) {
+        if (i1.created < i2.created) return 1
+        return -1
+      })
+      console.log(items)
+      resolve(items)
     }
   }))
 }
 
-function deleteListAction (event) {
-  let id = event.target.parentElement.getAttribute('id')
-  document.getElementById(id).remove()
-  // event.target.closest('.lists').remove()
-  id = id * 1
-  deleteListById(id).then(console.log)
-}
-
-function deleteListById (listId) {
+function fetchAllDoneItems () {
   let dbProm = initDb('VanillaToDo')
   return dbProm.then(e => new Promise((resolve, reject) => {
-    let tx = db.transaction('lists', 'readwrite')
-    let store = tx.objectStore('lists')
-    let req = store.delete(listId)
+    let tx = db.transaction('items', 'readonly')
+    let store = tx.objectStore('items')
+    let items = []
+    store.openCursor().onsuccess = e => {
+      let cursor = e.target.result
+      if (cursor) {
+        if (cursor.value.done === 'true') items.push(cursor.value)
+        cursor.continue()
+      }
+    }
+    tx.oncomplete = e => {
+      resolve(items)
+    }
+  }))
+}
+
+function deleteItemAction (event) {
+  let id = event.target.parentElement.getAttribute('id')
+  document.getElementById(id).remove()
+  id = id * 1
+  deleteItemById(id).then(console.log)
+}
+
+function deleteItemById (itemId) {
+  let dbProm = initDb('VanillaToDo')
+  return dbProm.then(e => new Promise((resolve, reject) => {
+    let tx = db.transaction('items', 'readwrite')
+    let store = tx.objectStore('items')
+    let req = store.delete(itemId)
     tx.oncomplete = e => {
       resolve(req)
     }
     tx.onabort = e => {
-      console.log('transaction failed: delete list by id')
+      console.log('transaction failed: delete item by id')
     }
   }))
 }
 
-function addItemToList (item, listId) {
-  let dbProm = initDb('VanillaToDo')
+function toggleStatus (itemId, itemStatus) {
+  let dbProm = initDb('VanillaTodo')
   return dbProm.then(e => new Promise((resolve, reject) => {
-    fetchListById(listId).then(req => {
-      let listR = req.result
-      let items = listR['items']
-      items.push(item)
-      listR.items = items
-      let tx = db.transaction('lists', 'readwrite')
-      let store = tx.objectStore('lists')
-      store.put(listR)
+    fetchItemById(itemId * 1).then(req => {
+      let itemR = req.result
+      itemR['done'] = itemStatus
+      let tx = db.transaction('items', 'readwrite')
+      let store = tx.objectStore('items')
+      store.put(itemR)
       tx.oncomplete = e => {
         resolve()
       }
     })
-  }))
+  })
+  )
 }
 
-// insertList(dLists[0])
-// insertList(dLists[1])
-// insertList(dLists[2])
+function updateItemNotes (itemId, newNote) {
+  let dbProm = initDb('VanillaTodo')
+  return dbProm.then(e => new Promise((resolve, reject) => {
+    fetchItemById(itemId * 1).then(req => {
+      let itemR = req.result
+      itemR['notes'] = newNote
+      let tx = db.transaction('items', 'readwrite')
+      let store = tx.objectStore('items')
+      store.put(itemR)
+      tx.oncomplete = e => {
+        resolve()
+      }
+    })
+  })
+  )
+}
 
-// console.log(fetchListById('010').then(req => console.log(req.result)))
-// console.log(deleteListById(12).then(req => console.log(req)))
-// addItemToList('mok', '110').then(() => console.log('keel'))
+function updateItemName (itemId, newName) {
+  let dbProm = initDb('VanillaTodo')
+  return dbProm.then(e => new Promise((resolve, reject) => {
+    fetchItemById(itemId * 1).then(req => {
+      let itemR = req.result
+      itemR['name'] = newName
+      let tx = db.transaction('items', 'readwrite')
+      let store = tx.objectStore('items')
+      store.put(itemR)
+      tx.oncomplete = e => {
+        resolve()
+      }
+    })
+  })
+  )
+}
 function renderAll () {
-  fetchAllLists().then(ls => ls.forEach(l => renderListDesc(l, deleteListAction)))
+  fetchAllItems().then(items => items.forEach(item => renderItemDesc(item, deleteItemAction)))
 }
 
 renderAll()
-
-// renderListItems(item1)
-// getDemoData().forEach(x => renderListDesc(x))
-// document.querySelector('list-card').animate([
-//   { transform: 'scale(1)', opacity: 1, offset: 0 },
-//   { transform: 'scale(0.5)', opacity: 0.5, offset: 1 }
-// ], {
-//   duration: 700,
-//   easing: 'ease-in-out',
-//   delay: 10,
-//   iterations: Infinity,
-//   directions: 'alternate',
-//   fill: 'forwards'
-// })

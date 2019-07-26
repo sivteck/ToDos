@@ -1,8 +1,7 @@
 import { fade, lightUp } from './animate.js'
 
-function createItem (listId, id, created, check = false, name = '', notes = '', label = '', scheduled = '', priority = '') {
+function createItem (id, created, check = false, name = '', notes = '', label = '', scheduled = '', priority = '') {
   return {
-    listId: listId,
     id: id,
     check: check,
     name: name,
@@ -13,9 +12,6 @@ function createItem (listId, id, created, check = false, name = '', notes = '', 
     priority: priority,
     child: null
   }
-}
-
-function deleteItem (itemId) {
 }
 
 function renderItem (item) {
@@ -38,4 +34,4 @@ function renderItem (item) {
   items.appendChild(clone)
 }
 
-export { createItem, deleteItem, renderItem }
+export { createItem, renderItem }
