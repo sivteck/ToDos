@@ -9,32 +9,43 @@ class ItemAdd extends HTMLElement {
     let tempStr = String.raw`
       <div class="itemV">
       <form id="ItemForm">
+
+    <div class="itemA">
         <input id="item-name" type="text" placeholder="Item Name">
-      <br>
-        <input id="item-notes" type="text" placeholder="Item Notes">
-      <br>
-        <input id="item-label" type="text" placeholder="Item Label">
-        <select name="item-label">
-          <option value="Low"> Low </option>
-          <option value="Medium"> Medium </option>
-          <option value="High"> High </option>
-        </select>
-      <br>
-        <input id="item-priority" type="text" placeholder="Item Priority">
-      <br>
-        <button type="button">Add Item</button>
+    </div>
+    <div class="itemA">
+        <button type="button" id="newItem">+</button>
+    </div>
       </form>
       </div>
     `
+    //         <input id="item-notes" type="text" placeholder="Item Notes">
+    //       <br>
+    //         <input id="item-label" type="text" placeholder="Item Label">
+    //       <br>
+    //         <select id="item-priority">
+    //           <option value="Low"> Low </option>
+    //           <option value="Medium"> Medium </option>
+    //           <option value="High"> High </option>
+    //         </select>
+    //
+    //       <br>
+
     template.innerHTML = tempStr
     let templateContent = template.content
     const style = document.createElement('style')
     style.textContent = `
+    .itemA {
+        display: inline-block;
+    }
     div.itemV {
         padding: 20px;
         margin: 10px;
         border: 2px solid red;
         border-radius: 20px;
+    }
+    input {
+        width: auto;
     }
     div.itemV:hover {
         background-color: yellow;
@@ -46,27 +57,22 @@ class ItemAdd extends HTMLElement {
     let itemNotes = clone.querySelector('#item-notes')
     let itemLabel = clone.querySelector('#item-label')
     let itemPriority = clone.querySelector('#item-priority')
-    itemName.oninput = function (e) {
-      this.setAttribute('item-name', itemName.value)
-    }.bind(this)
+    itemName.oninput = () => this.setAttribute('item-name', itemName.value)
 
-    itemNotes.oninput = function (e) {
-      this.setAttribute('item-notes', itemNotes.value)
-    }.bind(this)
-
-    itemLabel.oninput = function (e) {
-      this.setAttribute('item-label', itemLabel.value)
-    }.bind(this)
-
-    itemPriority.oninput = function (e) {
-      this.setAttribute('item-priority', itemPriority.value)
-    }.bind(this)
+    //     itemNotes.oninput = () => this.setAttribute('item-notes', itemNotes.value)
+    //
+    //     itemLabel.oninput = () => this.setAttribute('item-label', itemLabel.value)
+    //
+    //     itemPriority.oninput = () => {
+    //       this.setAttribute('item-priority', itemPriority.value)
+    //       console.log(itemPriority.value)
+    //     }
 
     let theButton = clone.querySelector('button')
     theButton.setAttribute('meme', 'momo')
-    theButton.addEventListener('click', function (e) {
+    theButton.addEventListener('click', e => {
       this.setAttribute('submitted', 'true')
-    }.bind(this))
+    })
     this.sRoot.appendChild(clone)
   }
 

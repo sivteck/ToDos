@@ -6,22 +6,47 @@ class ItemCard extends HTMLElement {
     this.sRoot = this.attachShadow({ mode: 'open' })
   }
 
-  render (itemId, itemName, itemNotes, itemLabel) {
+  render (itemId, itemName, itemNotes, itemPriority, itemLabel) {
+    let bgColor = 'yellow'
+    if (itemPriority === 'High') bgColor = 'red'
+    if (itemPriority === 'Medium') bgColor = 'yellow'
+    if (itemPriority === 'Low') bgColor = 'green'
     let template = document.createElement('template')
     let tempStr = String.raw`
       <div class="itemC" id="${itemId}">
+      <div class="itemHead">
         <input class="status" type="checkbox"> </input>
-        <h2 class="itemNameHeader" >${itemName}</h2>
-        <div class="notes"> <p class="item-notes"> ${itemNotes} </p> </div>
-        <p> ${itemLabel} </p>
-        <button type="button"> Delete Item</button>
       </div>
+      <div class="itemHead">
+        <h2 class="itemNameHeader" >${itemName}</h2>
+      </div>
+      <br>
+     <div class="collapsible-extras">
+      <div class="itemNotes">
+      <div class="notes"> <p class="item-notes"> ${itemNotes} </p> </div>
+      </div>
+      <p> Priority: ${itemPriority} </p>
+      <p> Label: ${itemLabel} </p>
+        <button type="button"> Delete Item</button>
+      
+      </div>
+     </div>
     `
+
     template.innerHTML = tempStr
 
     const style = document.createElement('style')
 
     style.textContent = `
+    .itemHead {
+        display: inline-block;
+    }
+    .collapsible-extras {
+        display: none;
+    }
+    .notes {
+    
+    }
     div.itemC {
         padding: 20px;
         margin: 10px;
@@ -29,34 +54,37 @@ class ItemCard extends HTMLElement {
         border-radius: 20px;
     }
     div.itemC:hover {
-        background-color: yellow;
+        background-color: ${bgColor};
+    }
+    .extras {
+    
     }
     `
     this.sRoot.appendChild(style)
     let clone = document.importNode(template.content, true)
     let statusCheckBox = clone.querySelector('input.status')
-    statusCheckBox.addEventListener('click', function (x) {
-      if (x.target.checked) {
+    statusCheckBox.addEventListener('click', e => {
+      if (e.target.checked) {
         this.setAttribute('done', 'true')
         this.toggleDone(true)
       } else {
         this.setAttribute('done', 'false')
         this.toggleDone(false)
       }
-    }.bind(this))
+    })
     let theButton = clone.querySelector('button')
     theButton.setAttribute('meme', 'momo')
-    theButton.addEventListener('click', function (e) {
+    theButton.addEventListener('click', e => {
       this.setAttribute('deleted', 'true')
-    }.bind(this))
+    })
     let notes = clone.querySelector('.notes')
     this.noteEditToggle = false
-    notes.addEventListener('click', function (e) {
+    notes.addEventListener('click', e => {
       if (this.noteEditToggle === false) {
         this.noteEditToggle = true
         this.toggleNoteEdit(true)
       }
-    }.bind(this))
+    })
 
     this.sRoot.appendChild(clone)
   }
@@ -66,22 +94,23 @@ class ItemCard extends HTMLElement {
     let itemName = this.getAttribute('itemName')
     let itemNotes = this.getAttribute('itemNotes')
     let itemLabel = this.getAttribute('itemLabel')
-    this.render(itemId, itemName, itemNotes, itemLabel)
+    let itemPriority = this.getAttribute('itemPriority')
+    this.render(itemId, itemName, itemNotes, itemPriority, itemLabel)
   }
 
   toggleNoteEdit (e) {
     if (e && this.noteEditToggle) {
       let notes = this.sRoot.querySelector('.notes')
       notes.innerHTML = String.raw`
-      <input id="editNotes" type="textarea" value="${this.getAttribute('itemNotes')}"> </input>
+      <textarea id="editNotes" cols="40" rows="5">${this.getAttribute('itemNotes')}</textarea>
       `
       let noteInp = this.sRoot.querySelector('#editNotes')
-      noteInp.addEventListener('keyup', function (e) {
+      noteInp.addEventListener('keyup', e => {
         if (e.keyCode === 13) {
           this.noteEditToggle = false
           this.setAttribute('itemNotes', noteInp.value)
         }
-      }.bind(this))
+      })
     }
   }
 
@@ -99,13 +128,10 @@ class ItemCard extends HTMLElement {
 
   attributeChangedCallback (name, newValue, oldValue) {
     if (name === 'done') {
-      if (newValue === 'true') console.log('done')
-      if (newValue === 'valse') console.log('not done')
       let itemId = this.getAttribute('itemId')
       let attrs = {
         itemId: itemId
       }
-
       this.dispatchEvent(new CustomEvent('done', { detail: attrs }))
     }
 
@@ -134,6 +160,7 @@ function renderItemDesc (item, deleteItemAction) {
   iV.setAttribute('itemNotes', item.notes)
   iV.setAttribute('itemLabel', item.label)
   iV.setAttribute('itemId', item.itemId)
+  iV.setAttribute('itemPriority', item.priority)
   let itemV = document.querySelector('items')
   itemV.appendChild(iV)
 }
@@ -143,6 +170,7 @@ let createItem = (id, name, notes, label, priority) => {
     itemId: id,
     name: name,
     notes: notes,
+    priority: priority,
     label: label
   }
 }

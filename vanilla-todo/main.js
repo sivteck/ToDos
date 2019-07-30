@@ -7,27 +7,14 @@ import { ItemCard, renderItemDesc } from './modules/item-card.js'
 window.customElements.define('item-card', ItemCard)
 window.customElements.define('item-add', ItemAdd)
 
-let newItemVisible = false
-let newItemB = document.querySelector('#newItem')
-newItemB.addEventListener('click', x => {
-  if (!newItemVisible) {
-    newItemB.innerHTML = '-'
-    let iA = document.createElement('item-add')
-    iA.addEventListener('submitted', x => {
-      insertItem(x.detail).then(() => {
-        document.querySelector('items').innerHTML = ''
-        renderAll()
-      })
-    })
-    document.querySelector('#createMenu').appendChild(iA)
-    newItemVisible = true
-  } else {
-    newItemB.innerHTML = '+'
-    let iA = document.querySelector('item-add')
-    iA.remove()
-    newItemVisible = false
-  }
+let iA = document.createElement('item-add')
+iA.addEventListener('submitted', x => {
+  insertItem(x.detail).then(() => {
+    document.querySelector('items').innerHTML = ''
+    renderAll()
+  })
 })
+document.querySelector('#createMenu').appendChild(iA)
 
 let itemsRoot = document.querySelector('items')
 
@@ -93,7 +80,7 @@ function initDb (name) {
 }
 
 function getDemoData () {
-  let itemData = [ {
+  let itemData = [{
     id: 1,
     check: false,
     name: 'item 1',
