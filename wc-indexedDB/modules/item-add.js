@@ -7,17 +7,17 @@ class ItemAdd extends HTMLElement {
   render () {
     let template = document.createElement('template')
     let tempStr = String.raw`
-      <div class="itemV">
-      <form id="ItemForm">
-
-    <div class="itemA">
-        <input id="item-name" type="text" placeholder="Item Name">
-    </div>
-    <div class="itemA">
-        <button type="button" id="newItem">+</button>
-    </div>
-      </form>
-      </div>
+        <div class="itemV">
+          <form id="ItemForm">
+        
+            <div class="itemA">
+              <input id="item-name" type="text" placeholder="Item Name">
+            </div>
+            <div class="itemA">
+              <button type="button" id="newItem">+</button>
+            </div>
+          </form>
+        </div>
     `
     //         <input id="item-notes" type="text" placeholder="Item Notes">
     //       <br>
@@ -39,13 +39,18 @@ class ItemAdd extends HTMLElement {
         display: inline-block;
     }
     div.itemV {
+        max-width: 500px;
         padding: 20px;
         margin: 10px;
         border: 2px solid red;
         border-radius: 20px;
     }
     input {
-        width: auto;
+        min-width: 200px;
+        min-height: 50px;
+        font-size: 20px;
+        border-radius: 10px;
+        border-thickness: 3px;
     }
     div.itemV:hover {
         background-color: yellow;
@@ -67,6 +72,7 @@ class ItemAdd extends HTMLElement {
     //       this.setAttribute('item-priority', itemPriority.value)
     //       console.log(itemPriority.value)
     //     }
+    //
 
     let theButton = clone.querySelector('button')
     theButton.setAttribute('meme', 'momo')

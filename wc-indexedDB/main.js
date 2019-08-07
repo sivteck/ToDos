@@ -34,8 +34,9 @@ function observeItems (mutations) {
       updateItemNotes(x.target.getAttribute('itemid') * 1, x.target.getAttribute('itemnotes')).then(x => renderAll())
     }
     if (x.attributeName === 'itemname') {
+      console.log(x.target.getAttribute('itemname'))
       document.querySelector('items').innerHTML = ''
-      updateItemNotes(x.target.getAttribute('itemid') * 1, x.target.getAttribute('itemname')).then(x => renderAll())
+      updateItemName(x.target.getAttribute('itemid') * 1, x.target.getAttribute('itemname')).then(x => renderAll())
     }
   })
 }
@@ -181,6 +182,26 @@ function fetchAllDoneItems () {
   }))
 }
 
+function fetchAllIncompleteItems () {
+  let dbProm = initDb('VanillaToDo')
+  return dbProm.then(e => new Promise((resolve, reject) => {
+    let tx = db.transaction('items', 'readonly')
+    let store = tx.objectStore('items')
+    let items = []
+    store.openCursor().onsuccess = e => {
+      let cursor = e.target.result
+      if (cursor) {
+        if (cursor.value.done !== 'true') items.push(cursor.value)
+        cursor.continue()
+      }
+    }
+    tx.oncomplete = e => {
+      resolve(items)
+    }
+  }))
+}
+
+
 function deleteItemAction (event) {
   let id = event.target.parentElement.getAttribute('id')
   document.getElementById(id).remove()
@@ -233,8 +254,7 @@ function updateItemNotes (itemId, newNote) {
         resolve()
       }
     })
-  })
-  )
+  }))
 }
 
 function updateItemName (itemId, newName) {
