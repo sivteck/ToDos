@@ -83,12 +83,10 @@ class ItemAdd extends HTMLElement {
 
     itemName.addEventListener('keydown', e => {
       if (e.keyCode === 13) e.preventDefault()
-      
     })
 
     itemName.addEventListener('keypress', e => {
       if (e.keyCode === 13) e.preventDefault()
-      
     })
 
 

@@ -239,7 +239,7 @@ function renderAll () {
   fetchAllItems().then(items => items.forEach(item => renderItemDesc(item, deleteItemAction)))
 }
 
-function renderCompleteItems () {
+function renderCompletedItems () {
   fetchAllItems().then(items => items.forEach(item => {
     if (item.done === 'true') renderItemDesc(item, deleteItemAction)
   }))

@@ -18,18 +18,19 @@ class ItemCard extends HTMLElement {
         <div class="itemHead">
           <div class="grid-item">
           </div>
-          <input class="status grid-item" type="checkbox" done="${itemStatus}"> </input>
+          <input id="statusCheckBox" class="status grid-item" type="checkbox" done="${itemStatus}"> </input>
+          <label id="statusCheckBoxLabel" for="statusCheckBox"></label>
           <div class="name grid-item">
-            <h2 class="itemNameHeader" >${itemName} </h2> 
+            <h2 class="itemNameHeader grid-item" >${itemName} </h2> 
           </div>
-          <button id="nameEditButton" class="grid-item" type="submit">✎</button>
           <button class="grid-item" type="button" id="deleteItemButton">X</button>
+          <button id="nameEditButton" class="grid-item" type="submit">✎</button>
         </div>
         <input id="toggle" type="checkbox">
-        <label for="toggle"> ⌄ </label>
+        <label id="lToggle" for="toggle">  </label>
         <div id="expand">
           <div class="itemNotes">
-            <p> Notes </p>
+            <h3> Notes </h3>
             <div class="notes"> <p class="item-notes"> ${itemNotes} </p> </div>
           </div>
           <!-- p> Priority: ${itemPriority} </p>
@@ -44,8 +45,21 @@ class ItemCard extends HTMLElement {
     const style = document.createElement('style')
 
     style.textContent = `
+    label#lToggle::before {
+        content: '⌄';
+    }
+    .itemC {
+        max-width: 500px;
+        border-bottom: 2px solid grey;
+    }
+
     .grid-item {
-        display: inline-block;
+        display: inline;
+    }
+
+    h2 {
+        font-size: 30px;
+        color: #34302F;
     }
 
     .itemHead {
@@ -54,13 +68,38 @@ class ItemCard extends HTMLElement {
         border-bottom: 2px solid gray;
     }
 
-    #nameEditButton {
+    input#statusCheckBox {
+        display: none; 
     }
 
-    #deleteItemButton {
+    #statusCheckBoxLabel::before {
+        font-size: 25px;
+        content: '✓';
+        color: transparent;
+        height: 20px;
+        width: 20px;
+        border: 2px solid gray;
+        padding: 0px;
+        margin: 7px;
+        border-radius: 3px;
+    }
+
+    #statusCheckBox:checked ~ #statusCheckBoxLabel::before {
+        content: '✓';
+        color: green;
+    }
+
+   #nameEditButton {
+        color: teal;
+        float: right;
+   }
+
+   #deleteItemButton {
         text-align: right;
+        color: red;
+        float: right;
     }
-
+ 
     .status {
         border: 3px solid red;
         height: 20px;
@@ -83,9 +122,7 @@ class ItemCard extends HTMLElement {
 
     div.itemC {
         min-width: 300px;
-        padding: 20px;
         margin: 10px;
-        border: 0px solid gray;
     }
 
     div.itemC:hover {
@@ -100,8 +137,16 @@ class ItemCard extends HTMLElement {
         color: #000;
     }
 
+    #toggle::before {
+      content: '⌄';
+    }
+
     #toggle:checked ~ #expand {
       height: auto;
+    }
+
+    #toggle:checked ~ #lToggle::before {
+        content: '⌃';
     }
 
     button {
@@ -111,6 +156,27 @@ class ItemCard extends HTMLElement {
         border: 0px solid gray;
         font-size: 20px;
         color: gray;
+    }
+
+    input {
+        min-width: 300px;
+        min-height: 40px;
+        font-size: 25px;
+        color: #34302F;
+        border: 2px solid gray;
+        border-right: 0px;
+        border-left: 0px;
+        border-top: 0px;
+    }
+
+    textarea {
+        min-width: 300px;
+        min-height: 40px;
+        font-size: 20px;
+        border: 2px solid gray;
+        border-right: 0px;
+        border-left: 0px;
+        border-top: 0px;
     }
     `
     this.sRoot.appendChild(style)
@@ -172,7 +238,7 @@ class ItemCard extends HTMLElement {
       let oldItemNotes = this.getAttribute('itemNotes')
       if (oldItemNotes === 'null') oldItemNotes = ''
       notes.innerHTML = String.raw`
-      <input type="text" id="editNotes" value="${oldItemNotes}"></input>
+      <textarea type="text" id="editNotes">${oldItemNotes}</textarea>
       `
       let noteInp = this.sRoot.querySelector('#editNotes')
       noteInp.addEventListener('keyup', e => {
@@ -188,7 +254,7 @@ class ItemCard extends HTMLElement {
     if (e && this.nameEditToggle) {
       let notes = this.sRoot.querySelector('.name')
       notes.innerHTML = String.raw`
-      <textarea id="editName" cols="40" rows="1">${this.getAttribute('itemName')}</textarea>
+      <input id="editName" value="${this.getAttribute('itemName')}"></input>
       `
       let nameInp = this.sRoot.querySelector('#editName')
       nameInp.addEventListener('keyup', e => {
@@ -203,7 +269,7 @@ class ItemCard extends HTMLElement {
   toggleDone (done) {
     if (done) {
       this.sRoot.querySelector('h2.itemNameHeader').innerHTML = String.raw`
-      <strike> ${this.getAttribute('itemName')} </strike>
+      <strike style="color: #E4D7D4"> ${this.getAttribute('itemName')} </strike>
       `
     } else {
       this.sRoot.querySelector('h2.itemNameHeader').innerHTML = String.raw`
