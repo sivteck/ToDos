@@ -9,12 +9,8 @@ class ItemAdd extends HTMLElement {
     let tempStr = String.raw`
         <div class="itemV">
           <form id="ItemForm">
-        
             <div class="itemA">
-              <input id="item-name" type="text" placeholder="Item Name">
-            </div>
-            <div class="itemA">
-              <button type="button" id="newItem">+</button>
+              <input id="item-name" type="text" placeholder="Add thing to be done">
             </div>
           </form>
         </div>
@@ -38,22 +34,25 @@ class ItemAdd extends HTMLElement {
     .itemA {
         display: inline-block;
     }
-    div.itemV {
+
+    div.itemA {
+        padding-top: 30px;
         max-width: 500px;
-        padding: 20px;
-        margin: 10px;
-        border: 2px solid red;
-        border-radius: 20px;
+        /* border: 2px solid gray;
+        border-radius: 20px; */
     }
+
     input {
-        min-width: 200px;
-        min-height: 50px;
+        min-width: 300px;
+        min-height: 40px;
         font-size: 20px;
-        border-radius: 10px;
-        border-thickness: 3px;
+        border: 2px solid gray;
+        border-right: 0px;
+        border-left: 0px;
+        border-top: 0px;
     }
+
     div.itemV:hover {
-        background-color: yellow;
     }
     `
     this.sRoot.appendChild(style)
@@ -74,11 +73,27 @@ class ItemAdd extends HTMLElement {
     //     }
     //
 
-    let theButton = clone.querySelector('button')
-    theButton.setAttribute('meme', 'momo')
-    theButton.addEventListener('click', e => {
-      this.setAttribute('submitted', 'true')
+    itemName.addEventListener('keyup', e => {
+      if (e.keyCode === 13) {
+        e.preventDefault()
+        if (e.target.value === '') return true
+        this.setAttribute('submitted', 'true')
+      }
     })
+
+    itemName.addEventListener('keydown', e => {
+      if (e.keyCode === 13) e.preventDefault()
+      
+    })
+
+    itemName.addEventListener('keypress', e => {
+      if (e.keyCode === 13) e.preventDefault()
+      
+    })
+
+
+
+    
     this.sRoot.appendChild(clone)
   }
 

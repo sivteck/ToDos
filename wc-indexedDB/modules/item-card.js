@@ -20,13 +20,13 @@ class ItemCard extends HTMLElement {
           </div>
           <input class="status grid-item" type="checkbox" done="${itemStatus}"> </input>
           <div class="name grid-item">
-            <h2 class="itemNameHeader" >${itemName}</h2>
+            <h2 class="itemNameHeader" >${itemName} </h2> 
           </div>
           <button id="nameEditButton" class="grid-item" type="submit">✎</button>
           <button class="grid-item" type="button" id="deleteItemButton">X</button>
         </div>
         <input id="toggle" type="checkbox">
-        <label for="toggle"> ☰  ☰  ☰  ☰  ☰  ☰  ☰  ☰  ☰  ☰  ☰  </label>
+        <label for="toggle"> ⌄ </label>
         <div id="expand">
           <div class="itemNotes">
             <p> Notes </p>
@@ -48,10 +48,28 @@ class ItemCard extends HTMLElement {
         display: inline-block;
     }
 
+    .itemHead {
+        text-align: left;
+        width: 80%
+        border-bottom: 2px solid gray;
+    }
+
+    #nameEditButton {
+    }
+
+    #deleteItemButton {
+        text-align: right;
+    }
+
     .status {
         border: 3px solid red;
         height: 20px;
         width: 20px;
+        text-decoration: line-through;
+    }
+
+    .item-notes::after {
+        content: '✎ ';
     }
 
     input#toggle {
@@ -64,19 +82,18 @@ class ItemCard extends HTMLElement {
     }
 
     div.itemC {
-        max-width: 500px;
+        min-width: 300px;
         padding: 20px;
         margin: 10px;
-        border: 2px solid red;
-        border-radius: 20px;
+        border: 0px solid gray;
     }
 
     div.itemC:hover {
-        background-color: ${bgColor};
     }
 
     label {
         color: #666;
+        font-size: 30px;
     }
 
     label:hover {
@@ -85,6 +102,15 @@ class ItemCard extends HTMLElement {
 
     #toggle:checked ~ #expand {
       height: auto;
+    }
+
+    button {
+        width: 40px;
+        height: 46px;
+        background-color: transparent;
+        border: 0px solid gray;
+        font-size: 20px;
+        color: gray;
     }
     `
     this.sRoot.appendChild(style)

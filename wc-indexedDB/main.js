@@ -163,45 +163,6 @@ function fetchAllItems () {
   }))
 }
 
-function fetchAllDoneItems () {
-  let dbProm = initDb('VanillaToDo')
-  return dbProm.then(e => new Promise((resolve, reject) => {
-    let tx = db.transaction('items', 'readonly')
-    let store = tx.objectStore('items')
-    let items = []
-    store.openCursor().onsuccess = e => {
-      let cursor = e.target.result
-      if (cursor) {
-        if (cursor.value.done === 'true') items.push(cursor.value)
-        cursor.continue()
-      }
-    }
-    tx.oncomplete = e => {
-      resolve(items)
-    }
-  }))
-}
-
-function fetchAllIncompleteItems () {
-  let dbProm = initDb('VanillaToDo')
-  return dbProm.then(e => new Promise((resolve, reject) => {
-    let tx = db.transaction('items', 'readonly')
-    let store = tx.objectStore('items')
-    let items = []
-    store.openCursor().onsuccess = e => {
-      let cursor = e.target.result
-      if (cursor) {
-        if (cursor.value.done !== 'true') items.push(cursor.value)
-        cursor.continue()
-      }
-    }
-    tx.oncomplete = e => {
-      resolve(items)
-    }
-  }))
-}
-
-
 function deleteItemAction (event) {
   let id = event.target.parentElement.getAttribute('id')
   document.getElementById(id).remove()
@@ -273,8 +234,21 @@ function updateItemName (itemId, newName) {
   })
   )
 }
+
 function renderAll () {
   fetchAllItems().then(items => items.forEach(item => renderItemDesc(item, deleteItemAction)))
+}
+
+function renderCompleteItems () {
+  fetchAllItems().then(items => items.forEach(item => {
+    if (item.done === 'true') renderItemDesc(item, deleteItemAction)
+  }))
+}
+
+function renderActiveItems () {
+  fetchAllItems().then(items => items.forEach(item => {
+    if (item.done !== 'true') renderItemDesc(item, deleteItemAction)
+  }))
 }
 
 renderAll()
