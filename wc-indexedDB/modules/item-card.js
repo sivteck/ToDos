@@ -70,8 +70,6 @@ class ItemCard extends HTMLElement {
 
     .itemHead {
         text-align: left;
-        width: 80%
-        border-bottom: 2px solid gray;
     }
 
     input#statusCheckBox {

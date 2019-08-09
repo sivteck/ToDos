@@ -15,17 +15,6 @@ class ItemAdd extends HTMLElement {
           </form>
         </div>
     `
-    //         <input id="item-notes" type="text" placeholder="Item Notes">
-    //       <br>
-    //         <input id="item-label" type="text" placeholder="Item Label">
-    //       <br>
-    //         <select id="item-priority">
-    //           <option value="Low"> Low </option>
-    //           <option value="Medium"> Medium </option>
-    //           <option value="High"> High </option>
-    //         </select>
-    //
-    //       <br>
 
     template.innerHTML = tempStr
     let templateContent = template.content
@@ -92,9 +81,6 @@ class ItemAdd extends HTMLElement {
     itemName.addEventListener('keypress', e => {
       if (e.keyCode === 13) e.preventDefault()
     })
-
-
-
     
     this.sRoot.appendChild(clone)
   }
