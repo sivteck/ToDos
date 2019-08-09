@@ -14,6 +14,7 @@ iA.addEventListener('submitted', x => {
     renderAll()
   })
 })
+
 document.querySelector('#createMenu').appendChild(iA)
 
 let itemsRoot = document.querySelector('items')

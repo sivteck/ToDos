@@ -21,7 +21,7 @@ class ItemCard extends HTMLElement {
           <input id="statusCheckBox" class="status grid-item" type="checkbox" done="${itemStatus}"> </input>
           <label id="statusCheckBoxLabel" for="statusCheckBox"></label>
           <div class="name grid-item">
-            <h2 class="itemNameHeader grid-item" >${itemName} </h2> 
+            <p class="itemNameHeader grid-item" >${itemName} </p> 
           </div>
           <button class="grid-item" type="button" id="deleteItemButton">X</button>
           <button id="nameEditButton" class="grid-item" type="submit">✎</button>
@@ -30,7 +30,6 @@ class ItemCard extends HTMLElement {
         <label id="lToggle" for="toggle">  </label>
         <div id="expand">
           <div class="itemNotes">
-            <h3> Notes </h3>
             <div class="notes"> <p class="item-notes"> ${itemNotes} </p> </div>
           </div>
           <!-- p> Priority: ${itemPriority} </p>
@@ -45,19 +44,26 @@ class ItemCard extends HTMLElement {
     const style = document.createElement('style')
 
     style.textContent = `
-    label#lToggle::before {
-        content: '⌄';
+    label#lToggle::after {
+        font-size: 15px;
+        content: '+ Notes';
     }
+
     .itemC {
-        max-width: 500px;
-        border-bottom: 2px solid grey;
+        width: 500px;
+        border-bottom: 2px solid gray;
+        border-right: 2px solid gray;
+        border-top: 1px solid gray;
+        border-left: 1px solid gray;
+        border-radius: 10px;
     }
 
     .grid-item {
         display: inline;
     }
 
-    h2 {
+    .itemNameHeader {
+        font: helvetica;
         font-size: 30px;
         color: #34302F;
     }
@@ -79,9 +85,12 @@ class ItemCard extends HTMLElement {
         height: 20px;
         width: 20px;
         border: 2px solid gray;
+        border-left: 1px solid gray;
+        border-top: 1px solid gray;
+        border-radius: 5px;
         padding: 0px;
         margin: 7px;
-        border-radius: 3px;
+        color: #e0d8d7;
     }
 
     #statusCheckBox:checked ~ #statusCheckBoxLabel::before {
@@ -137,16 +146,15 @@ class ItemCard extends HTMLElement {
         color: #000;
     }
 
-    #toggle::before {
-      content: '⌄';
-    }
-
     #toggle:checked ~ #expand {
       height: auto;
     }
 
-    #toggle:checked ~ #lToggle::before {
-        content: '⌃';
+    #lToggle {
+    }
+
+    #toggle:checked ~ #lToggle::after {
+        content: '- Notes';
     }
 
     button {
@@ -268,11 +276,11 @@ class ItemCard extends HTMLElement {
 
   toggleDone (done) {
     if (done) {
-      this.sRoot.querySelector('h2.itemNameHeader').innerHTML = String.raw`
+      this.sRoot.querySelector('p.itemNameHeader').innerHTML = String.raw`
       <strike style="color: #E4D7D4"> ${this.getAttribute('itemName')} </strike>
       `
     } else {
-      this.sRoot.querySelector('h2.itemNameHeader').innerHTML = String.raw`
+      this.sRoot.querySelector('p.itemNameHeader').innerHTML = String.raw`
        ${this.getAttribute('itemName')}
        `
     }

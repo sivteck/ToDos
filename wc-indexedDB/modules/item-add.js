@@ -31,6 +31,8 @@ class ItemAdd extends HTMLElement {
     let templateContent = template.content
     const style = document.createElement('style')
     style.textContent = `
+    .itemV {
+    }
     .itemA {
         display: inline-block;
     }
@@ -43,13 +45,15 @@ class ItemAdd extends HTMLElement {
     }
 
     input {
-        min-width: 300px;
+        min-width: 500px;
         min-height: 40px;
         font-size: 20px;
-        border: 2px solid gray;
-        border-right: 0px;
-        border-left: 0px;
-        border-top: 0px;
+        border-width: thin;
+        border-left: 5px solid gray;
+        border-right: 2px solid gray;
+        border-bottom: 2px solid gray;
+        border-radius: 5px;
+        margin-left: -5px;
     }
 
     div.itemV:hover {
