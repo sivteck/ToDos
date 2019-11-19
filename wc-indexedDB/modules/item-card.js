@@ -13,11 +13,9 @@ class ItemCard extends HTMLElement {
     if (itemPriority === 'Low') bgColor = 'green'
     let template = document.createElement('template')
     if (itemNotes === 'null') itemNotes = 'Add Notes'
-    let tempStr = String.raw`
+    let tempStr = `
       <div class="itemC" id="${itemId}">
         <div class="itemHead">
-          <div class="grid-item">
-          </div>
           <input id="statusCheckBox" class="status grid-item" type="checkbox" done="${itemStatus}"> </input>
           <label id="statusCheckBoxLabel" for="statusCheckBox"></label>
           <div class="name grid-item">

@@ -81,44 +81,6 @@ function initDb (name) {
   })
 }
 
-function getDemoData () {
-  let itemData = [{
-    id: 1,
-    check: false,
-    name: 'item 1',
-    notes: 'demo item 1',
-    label: 'demo',
-    created: 'date',
-    scheduled: 'today',
-    priority: 'high',
-    child: null
-  },
-  {
-    id: 2,
-    check: false,
-    name: 'item 2',
-    notes: 'demo item 1',
-    label: 'demo',
-    created: 'date',
-    scheduled: 'today',
-    priority: 'high',
-    child: null
-  },
-  {
-    id: 3,
-    check: false,
-    name: 'item 3',
-    notes: 'demo item 3',
-    label: 'demo',
-    created: 'date',
-    scheduled: 'today',
-    priority: 'high',
-    child: null
-  }]
-
-  return itemData
-}
-
 function insertItem (item) {
   let dbProm = initDb('VanillaToDo')
   return dbProm.then(() => {

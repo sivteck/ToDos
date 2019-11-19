@@ -56,16 +56,6 @@ class ItemAdd extends HTMLElement {
     let itemPriority = clone.querySelector('#item-priority')
     itemName.oninput = () => this.setAttribute('item-name', itemName.value)
 
-    //     itemNotes.oninput = () => this.setAttribute('item-notes', itemNotes.value)
-    //
-    //     itemLabel.oninput = () => this.setAttribute('item-label', itemLabel.value)
-    //
-    //     itemPriority.oninput = () => {
-    //       this.setAttribute('item-priority', itemPriority.value)
-    //       console.log(itemPriority.value)
-    //     }
-    //
-
     itemName.addEventListener('keyup', e => {
       if (e.keyCode === 13) {
         e.preventDefault()
